@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.vipulasri:timelineview:1.1.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/45f487af4937f97fac12c02ac1382ad3/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/6233d84b6605d4a1e7a6187ec27ec1ad/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/45f487af4937f97fac12c02ac1382ad3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/45f487af4937f97fac12c02ac1382ad3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/45f487af4937f97fac12c02ac1382ad3/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/6233d84b6605d4a1e7a6187ec27ec1ad/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/timelineview-1.1.0.aar/6233d84b6605d4a1e7a6187ec27ec1ad/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
