@@ -22,6 +22,7 @@ public class SessionManager {
     public static final String KEY_EMAIL="email";
     public static final String KEY_AGENCY="agency";
     public static final String KEY_GUARDID="guardid";
+    public static final String KEY_PROFILE_PHOTO="profile_photo";
     private static final String Pref_Name= "Loginpref";
     private static final String IS_LOGIN = "IsLoggedIn";
    public static final String IS_Lock ="Islocked";
@@ -38,7 +39,7 @@ public class SessionManager {
         editor = pref.edit();
     }
 
-    public void createLoginSession( String number, String password, String id, String name, String email, String agency, String guardid){
+    public void createLoginSession( String number, String password, String id, String name, String email, String agency, String guardid, String profile_photo){
 
         editor.putBoolean(IS_LOGIN,true);
         editor.putString(KEY_NUMBER, number);
@@ -48,6 +49,8 @@ public class SessionManager {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_AGENCY, agency);
         editor.putString(KEY_GUARDID, guardid);
+        editor.putString(KEY_PROFILE_PHOTO, profile_photo);
+
 
         editor.commit();
     }
@@ -63,6 +66,8 @@ public class SessionManager {
         user.put(KEY_EMAIL, pref.getString(KEY_EMAIL, ""));
         user.put(KEY_AGENCY, pref.getString(KEY_AGENCY, ""));
         user.put(KEY_GUARDID, pref.getString(KEY_GUARDID, ""));
+        user.put(KEY_PROFILE_PHOTO, pref.getString(KEY_PROFILE_PHOTO, ""));
+
         user.put(IS_Lock,pref.getString(IS_Lock,""));
 
         return user;

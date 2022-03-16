@@ -47,6 +47,7 @@
 
         </RelativeLayout>
 
+
         <ImageView
             android:id="@+id/ii"
             android:layout_width="250dp"
@@ -54,6 +55,14 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/guards" />
 
+
+        <ImageView
+            android:id="@+id/profile_photo"
+            android:layout_width="98dp"
+            android:layout_height="124dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="160dp"
+            android:src="@drawable/ic_photo_camera" />
 
         <ImageView
             android:layout_width="match_parent"
@@ -103,6 +112,7 @@
             android:visibility="visible">
 
             <RelativeLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="@drawable/bordercredentials">
@@ -265,6 +275,8 @@
                     tools:fontFamily="@font/sfpro" />
 
             </RelativeLayout>
+
+
 
         </LinearLayout>
 

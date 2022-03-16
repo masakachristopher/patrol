@@ -131,12 +131,13 @@ public class LoginActivity extends AppCompatActivity {
                                 String email = j.getString("email");
                                 String agency = j.getString("agency");
                                 String guardid = j.getString("guard_id");
+                                String profile_photo = j.getString("profile_photo");
                                 // If response matched then show the toast.
                                 Toast.makeText(LoginActivity.this, suc, Toast.LENGTH_SHORT).show();
 
                                 // Finish the current Login activity.
                                 finish();
-                                session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid);
+                                session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
 
                                 // Opening the user profile activity using intent.
                                 Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
@@ -170,6 +171,9 @@ public class LoginActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<String, String>();
                 headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+//                headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+
+//                d29985af97d29a80e40cd81016d939af
                 return headers;
             }
 

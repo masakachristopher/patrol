@@ -20,6 +20,7 @@ import io.fabric.sdk.android.Fabric;
 import wktechsys.com.guardprotection.Fragments.HomeFragment;
 import wktechsys.com.guardprotection.Fragments.HistoryFragment;
 import wktechsys.com.guardprotection.Fragments.ProfileFragment;
+import wktechsys.com.guardprotection.Fragments.ReportFragment;
 import wktechsys.com.guardprotection.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -58,7 +59,11 @@ public class DashboardActivity extends AppCompatActivity {
                         fragment = new ProfileFragment();
                         break;
 
-                    case R.id.history:
+                    case R.id.report:
+                        fragment = new ReportFragment();
+                        break;
+
+                   case R.id.history:
                         fragment = new HistoryFragment();
                         break;
                 }

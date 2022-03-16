@@ -78,10 +78,7 @@
                 android:src="@drawable/ic_lock" />
 
             <EditText
-                android:singleLine="true"
-                android:inputType="textPassword"
                 android:id="@+id/password"
-                android:textColorHint="#a7a7a7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -90,8 +87,11 @@
                 android:layout_toRightOf="@+id/image2"
                 android:background="#fff"
                 android:hint="Password"
+                android:inputType="textPassword"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
+                android:singleLine="true"
+                android:textColorHint="#a7a7a7"
                 android:textSize="12sp"
                 tools:fontFamily="@font/sfpro" />
 
