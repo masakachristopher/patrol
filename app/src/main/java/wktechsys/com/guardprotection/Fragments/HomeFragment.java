@@ -46,6 +46,7 @@ import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import wktechsys.com.guardprotection.Activities.AttendenceActivity;
+import wktechsys.com.guardprotection.Activities.DashboardActivity;
 import wktechsys.com.guardprotection.Activities.LoginActivity;
 import wktechsys.com.guardprotection.Activities.MissedActivity;
 import wktechsys.com.guardprotection.Activities.ScanCheckpoint;
@@ -59,7 +60,7 @@ import wktechsys.com.guardprotection.Utilities.SessionManager;
 
 public class HomeFragment extends Fragment {
 
-    TextView strt, nameC, descript, intime, duration, total, complete, check, gname;
+    TextView strt, strtShift, nameC, descript, intime, duration, total, complete, check, gname;
     FloatingActionButton flash;
     RelativeLayout rounds;
     Dialog dialog;
@@ -72,12 +73,14 @@ public class HomeFragment extends Fragment {
     String endtime;
     ShimmerFrameLayout mShimmerViewContainer;
     RelativeLayout companyrr, missedrr;
+    ProgressDialog progressDialog;
+
 
 
     RecyclerView recyclerView;
     TotalRoundAdapter rAdapter;
     StringRequest stringRequest, stringRequest1;
-    RequestQueue mRequestQueue, mRequestQueue1;
+    RequestQueue mRequestQueue, requestQueue, mRequestQueue1;
     private List<RoundModel> list = new ArrayList<>();
     public static final String TAG = "STag";
 
@@ -94,6 +97,7 @@ public class HomeFragment extends Fragment {
         session = new SessionManager(getActivity());
 
         strt = v.findViewById(R.id.startScan);
+        strtShift = v.findViewById(R.id.startShift);
         nameC = v.findViewById(R.id.cname);
         gname = v.findViewById(R.id.textname);
         descript = v.findViewById(R.id.description);
@@ -126,6 +130,17 @@ public class HomeFragment extends Fragment {
                 startActivity(i);
             }
         });
+
+        strtShift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent i = new Intent(getContext(), ScanCheckpoint.class);
+//                startActivity(i);
+//                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
+                StartShift();
+            }
+        });
+
 
         rounds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -231,6 +246,115 @@ public class HomeFragment extends Fragment {
         return v;
     }
 
+
+    protected void  StartShift(){
+
+
+        progressDialog = new ProgressDialog(getActivity());
+        // Showing progress dialog at user registration time.
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
+
+        // Creating Volley newRequestQueue .
+        requestQueue = Volley.newRequestQueue(getActivity());
+
+//        Toast.makeText(getActivity(), "Guard ID" + guard_id, Toast.LENGTH_SHORT).show();
+        // Creating string request with post method.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.START_SHIFT_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+
+                        Log.d("NetworkLog", "Request Sent");
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+
+                        // Matching server responce message to our text.
+                        JSONObject j = null;
+                        try {
+                            j = new JSONObject(ServerResponse);
+
+                            String status = j.getString("status");
+                            if (status.equals("200")) {
+                                String suc = j.getString("msg");
+//                                String data = j.getString("data");
+//                                    String id = j.getString("id");
+//                                    String name = j.getString("name");
+//                                    String email = j.getString("email");
+//                                    String agency = j.getString("agency");
+//                                    String guardid = j.getString("guard_id");
+//                                    String profile_photo = j.getString("profile_photo");
+                                // If response matched then show the toast.
+                                Toast.makeText(getActivity(), suc, Toast.LENGTH_SHORT).show();
+
+                                // Finish the current Login activity.
+//                                    finish();
+//                                    session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
+
+                                // Opening the user profile activity using intent.
+//                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+
+//                                    startActivity(intent);
+
+                            } else {
+                                String msg = j.getString("msg");
+                                // Showing Echo Response Message Coming From Server.
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+                        // NetworkDialog();
+                    }
+                }) {
+
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+//                headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+
+//                d29985af97d29a80e40cd81016d939af
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                // The firs argument should be same sa your MySQL database table columns.
+//                    params.put("mobile", mobile.getText().toString());
+//                    params.put("password", password.getText().toString());
+                params.put("guard_id", guard_id);
+
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest);
+
+    }
 
     public void RoundInfo() {
 

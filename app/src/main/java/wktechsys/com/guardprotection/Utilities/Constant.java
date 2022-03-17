@@ -26,6 +26,10 @@ public class Constant {
     public static final String HISTORYSORT_URL = BASE_API_URL+"history_by_date";
     public static final String INCIDENT_URL = BASE_API_URL+"get_incidents";
     public static final String ADD_REPORT_URL = BASE_API_URL+"add_report";
+    public static final String START_SHIFT_URL = BASE_API_URL+"start_shift";
+    public static final String START_END_URL = BASE_API_URL+"sign_out_shift";
+
+
 
 
 
