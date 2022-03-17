@@ -3,6 +3,7 @@
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/fe6182a3aa79e2f06c17fcedeaf8ff2e/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/70f13f1853de790279868a986f25c11d/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/a8c496a8a7a960212bac2d10a4d1dd20/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/fe6182a3aa79e2f06c17fcedeaf8ff2e/jars/classes.jar!/" />
@@ -10,6 +11,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/fe6182a3aa79e2f06c17fcedeaf8ff2e/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/70f13f1853de790279868a986f25c11d/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/70f13f1853de790279868a986f25c11d/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/a8c496a8a7a960212bac2d10a4d1dd20/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/a8c496a8a7a960212bac2d10a4d1dd20/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/support-media-compat-28.0.0.aar/a8c496a8a7a960212bac2d10a4d1dd20/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

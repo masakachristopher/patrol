@@ -6,6 +6,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.0.2.aar/8542c27ff1d2765e0e61040a5027d80b/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.0.2.aar/c53dead7c963d8a986b07bd908ef3710/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.0.2.aar/c53dead7c963d8a986b07bd908ef3710/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.0.2.aar/34c01eb744b88e0355db5266b23992d2/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.0.2.aar/34c01eb744b88e0355db5266b23992d2/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.0.2.aar/34c01eb744b88e0355db5266b23992d2/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

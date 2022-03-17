@@ -17,8 +17,9 @@
         <entry key="app/src/main/res/layout/activity_scan.xml" value="0.22327898550724637" />
         <entry key="app/src/main/res/layout/activity_scan_checkpoint.xml" value="0.184375" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.184375" />
+        <entry key="app/src/main/res/layout/border.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_history.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.40674937350828877" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.184375" />
         <entry key="app/src/main/res/layout/fragment_report.xml" value="0.18229166666666666" />
         <entry key="app/src/main/res/layout/historycard.xml" value="0.22327898550724637" />

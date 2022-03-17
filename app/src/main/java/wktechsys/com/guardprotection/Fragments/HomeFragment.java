@@ -7,8 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +44,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -60,7 +63,7 @@ import wktechsys.com.guardprotection.Utilities.SessionManager;
 
 public class HomeFragment extends Fragment {
 
-    TextView strt, strtShift, nameC, descript, intime, duration, total, complete, check, gname;
+    TextView strt,t_View, strtShift,endShift, nameC, descript, intime, duration, total, complete, check, gname;
     FloatingActionButton flash;
     RelativeLayout rounds;
     Dialog dialog;
@@ -74,7 +77,10 @@ public class HomeFragment extends Fragment {
     ShimmerFrameLayout mShimmerViewContainer;
     RelativeLayout companyrr, missedrr;
     ProgressDialog progressDialog;
-
+    Button startBtn,stopBtn;
+    private int sec = 0;
+    private boolean is_running;
+    private boolean was_running;
 
 
     RecyclerView recyclerView;
@@ -98,6 +104,7 @@ public class HomeFragment extends Fragment {
 
         strt = v.findViewById(R.id.startScan);
         strtShift = v.findViewById(R.id.startShift);
+        endShift = v.findViewById(R.id.endShift);
         nameC = v.findViewById(R.id.cname);
         gname = v.findViewById(R.id.textname);
         descript = v.findViewById(R.id.description);
@@ -111,7 +118,11 @@ public class HomeFragment extends Fragment {
         mShimmerViewContainer = v.findViewById(R.id.shimmer_view_container);
         companyrr = v.findViewById(R.id.companyinfo);
         missedrr = v.findViewById(R.id.missR);
+        t_View = v.findViewById(R.id.time_view);
+        startBtn = v.findViewById(R.id.start_button);
+        stopBtn = v.findViewById(R.id.stop_button);
 
+//        stopStartButton = (Button) findViewById(R.id.startStopButton);
 
         logoutbtn = v.findViewById(R.id.logout);
 
@@ -122,6 +133,12 @@ public class HomeFragment extends Fragment {
         gname.setText(name);
 
         //session.checkLogin();
+        if (savedInstanceState != null) {
+            sec = savedInstanceState.getInt("seconds");
+            is_running = savedInstanceState.getBoolean("running");
+            was_running = savedInstanceState .getBoolean("wasRunning");
+        }
+        running_Timer();
 
         strt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,10 +154,51 @@ public class HomeFragment extends Fragment {
 //                Intent i = new Intent(getContext(), ScanCheckpoint.class);
 //                startActivity(i);
 //                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
-                StartShift();
+//                StartShift();
+//                onClickStart();
+
+
+        if(is_running == false)
+        {
+            is_running = true;
+//            setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
+
+//            startTimer();
+            StartShift();
+            onClickStart();
+        }
+        else
+        {
+            is_running = false;
+//            setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
+
+//            timerTask.cancel();
+            EndShift();
+            onClickStop();
+        }
             }
         });
 
+//        startBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Intent i = new Intent(getContext(), ScanCheckpoint.class);
+////                startActivity(i);
+////                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
+////                StartShift();
+//                onClickStart();
+//            }
+//        });
+        endShift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent i = new Intent(getContext(), ScanCheckpoint.class);
+//                startActivity(i);
+//                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
+                EndShift();
+//                onClickStop();
+            }
+        });
 
         rounds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,9 +304,54 @@ public class HomeFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onSaveInstanceState(
+            Bundle savedInstanceState)
+    {
+        savedInstanceState.putInt("seconds", sec);
+        savedInstanceState.putBoolean("running", is_running);
+        savedInstanceState.putBoolean("wasRunning", was_running);
+    }
 
+    private void setButtonUI(String start, int color, int bgColor)
+    {
+        //startstopBtn
+        strtShift.setText(start);
+        strtShift.setBackgroundColor(ContextCompat.getColor(getActivity(), bgColor));
+        strtShift.setTextColor(ContextCompat.getColor(getActivity(), color));
+    }
     protected void  StartShift(){
 
+//        if(timerStarted == false)
+//        {
+//            timerStarted = true;
+//            setButtonUI("STOP", R.color.red);
+//
+//            startTimer();
+//        }
+//        else
+//        {
+//            timerStarted = false;
+//            setButtonUI("START", R.color.green);
+//
+//            timerTask.cancel();
+//        }
+//
+//        if(is_running == false)
+//        {
+//            is_running = true;
+//            setButtonUI("STOP", R.color.colorAccent);
+//
+////            startTimer();
+////            onClickStart();
+//        }
+//        else
+//        {
+//            was_running = false;
+//            setButtonUI("START", R.color.cardview_shadow_end_color);
+//
+////            timerTask.cancel();
+//        }
 
         progressDialog = new ProgressDialog(getActivity());
         // Showing progress dialog at user registration time.
@@ -286,6 +389,117 @@ public class HomeFragment extends Fragment {
 //                                    String guardid = j.getString("guard_id");
 //                                    String profile_photo = j.getString("profile_photo");
                                 // If response matched then show the toast.
+                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
+
+                                // Finish the current Login activity.
+//                                    finish();
+//                                    session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
+
+                                // Opening the user profile activity using intent.
+//                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+
+//                                    startActivity(intent);
+//                                setButtonUI("STOP", R.color.colorAccent);
+                                onClickStart();
+                                setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
+
+
+                            } else {
+                                String msg = j.getString("msg");
+                                // Showing Echo Response Message Coming From Server.
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+                        // NetworkDialog();
+                    }
+                }) {
+
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                // The firs argument should be same sa your MySQL database table columns.
+//                    params.put("mobile", mobile.getText().toString());
+//                    params.put("password", password.getText().toString());
+                params.put("guard_id", guard_id);
+
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest);
+
+    }
+
+    protected void EndShift(){
+
+
+        progressDialog = new ProgressDialog(getActivity());
+        // Showing progress dialog at user registration time.
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
+
+        // Creating Volley newRequestQueue .
+        requestQueue = Volley.newRequestQueue(getActivity());
+
+//        Toast.makeText(getActivity(), "Guard ID" + guard_id, Toast.LENGTH_SHORT).show();
+        // Creating string request with post method.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.END_SHIFT_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+
+                        Log.d("NetworkLog", "Request Sent");
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+
+                        // Matching server responce message to our text.
+                        JSONObject j = null;
+                        try {
+                            j = new JSONObject(ServerResponse);
+
+                            String status = j.getString("status");
+                            if (status.equals("200")) {
+                                String suc = j.getString("msg");
+//                                String data = j.getString("data");
+//                                    String id = j.getString("id");
+//                                    String name = j.getString("name");
+//                                    String email = j.getString("email");
+//                                    String agency = j.getString("agency");
+//                                    String guardid = j.getString("guard_id");
+//                                    String profile_photo = j.getString("profile_photo");
+                                // If response matched then show the toast.
                                 Toast.makeText(getActivity(), suc, Toast.LENGTH_SHORT).show();
 
                                 // Finish the current Login activity.
@@ -296,6 +510,9 @@ public class HomeFragment extends Fragment {
 //                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
 
 //                                    startActivity(intent);
+                                onClickStop();
+                                setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
+
 
                             } else {
                                 String msg = j.getString("msg");
@@ -645,12 +862,18 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mShimmerViewContainer.startShimmerAnimation();
+        if (was_running) {
+            is_running = true;
+        }
     }
 
     @Override
     public void onPause() {
         mShimmerViewContainer.stopShimmerAnimation();
         super.onPause();
+
+        was_running = is_running;
+        is_running = false;
     }
 
     private void NetworkDialog1() {
@@ -669,4 +892,53 @@ public class HomeFragment extends Fragment {
         });
         dialogs.show();
     }
+//    @Override
+//    protected void onPause()
+//    {
+//        super.onPause();
+//        was_running = is_running;
+//        is_running = false;
+//    }
+//    @Override
+//    protected void onResume()
+//    {
+//        super.onResume();
+//        if (was_running) {
+//            is_running = true;
+//        }
+//    }
+    public void onClickStart()
+    {
+        is_running = true;
+    }
+    public void onClickStop()
+    {
+        is_running = false;
+    }
+    public void onClickReset()
+    {
+        is_running = false;
+        sec = 0;
+    }
+    private void running_Timer()
+    {
+//        final TextView t_View = v.findViewById(R.id.time_view);
+        final Handler handle = new Handler();
+        handle.post(new Runnable() {
+            @Override
+            public void run()
+            {
+                int hrs = sec / 3600;
+                int mins = (sec % 3600) / 60;
+                int secs = sec % 60;
+                String time_t = String .format(Locale.getDefault(), "    %d:%02d:%02d   ", hrs,mins, secs);
+                t_View.setText(time_t);
+                if (is_running) {
+                    sec++;
+                }
+                handle.postDelayed(this, 1000);
+            }
+        });
+    }
+
 }

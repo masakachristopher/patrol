@@ -317,6 +317,50 @@
                                     android:textSize="10sp" />
                             </RelativeLayout>
                         </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+
+                            >
+
+                            <TextView
+                                android:id="@+id/time_view"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="100dp"
+
+                                android:background="@drawable/border"
+                                android:textAppearance="@android:style/TextAppearance.Large"
+                                android:textSize="50dp" />
+
+                            <Button
+                                android:id="@+id/start_button"
+                                android:visibility="gone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="50dp"
+                                android:text="@string/start" />
+                            <Button
+                                android:visibility="gone"
+                                android:id="@+id/stop_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginTop="50dp"
+                                android:text="@string/stop" />
+<!--                            <Button-->
+<!--                                android:id="@+id/reset_button"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginTop="50dp"-->
+<!--                                android:layout_gravity="center_horizontal"-->
+<!--                                android:onClick="onClickReset"-->
+<!--                                android:text="@string/reset" />-->
+                        </RelativeLayout>
+
                     </android.support.v7.widget.CardView>
 
                     <android.support.v7.widget.CardView
@@ -473,8 +517,28 @@
                         android:text="Cick to Start Shift"
                         android:textColor="#128b4c"
                         android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/endShift"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_below="@+id/c2"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="17dp"
+                        android:background="@drawable/bordercapture"
+                        android:clickable="true"
+                        android:fontFamily="@font/sfpro"
+                        android:foreground="@drawable/bordercapture"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:text="Cick to End Shift"
+                        android:textColor="#128b4c"
+                        android:textSize="18sp" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
 
         </RelativeLayout>
 
