@@ -7,8 +7,8 @@ public class Constant {
 //    public static final String BASE_URL = "http://qrpatrol.davidbilaza.com/";
 
     // local urls
-    public static final String BASE_API_URL = "http://100.100.1.21:8888/TranscargoGuardAdminPanel/api/";
-    public static final String BASE_URL = "http://100.100.1.21:8888/TranscargoGuardAdminPanel/";
+    public static final String BASE_API_URL = "http://100.100.1.33/guardadmin/api/";
+    public static final String BASE_URL = "http://100.100.1.33/guardadmin/";
 
 
     public static final String LOGIN_URL = BASE_API_URL+"auth/login";

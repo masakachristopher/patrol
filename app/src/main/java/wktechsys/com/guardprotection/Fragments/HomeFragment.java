@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -58,6 +60,7 @@ import wktechsys.com.guardprotection.Adapters.TotalRoundAdapter;
 import wktechsys.com.guardprotection.Models.CheckPointModel;
 import wktechsys.com.guardprotection.Models.RoundModel;
 import wktechsys.com.guardprotection.R;
+import wktechsys.com.guardprotection.Utilities.ChronometerHelper;
 import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
 
@@ -81,6 +84,9 @@ public class HomeFragment extends Fragment {
     private int sec = 0;
     private boolean is_running;
     private boolean was_running;
+    Chronometer chronometer;
+    ChronometerHelper chronometerHelper = new ChronometerHelper();
+
 
 
     RecyclerView recyclerView;
@@ -90,6 +96,21 @@ public class HomeFragment extends Fragment {
     private List<RoundModel> list = new ArrayList<>();
     public static final String TAG = "STag";
 
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putInt("seconds", sec);
+//        outState.putBoolean("running", is_running);
+//        outState.putBoolean("was_running", was_running);
+//        super.onSaveInstanceState(outState);
+//    }
+    @Override
+    public void onSaveInstanceState(
+            Bundle savedInstanceState)
+    {
+        savedInstanceState.putInt("seconds", sec);
+        savedInstanceState.putBoolean("running", is_running);
+        savedInstanceState.putBoolean("wasRunning", was_running);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,6 +120,12 @@ public class HomeFragment extends Fragment {
         Fabric.with(getActivity(), new Crashlytics());
         //Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+        if (savedInstanceState != null) {
+            sec = savedInstanceState.getInt("seconds");
+            is_running = savedInstanceState.getBoolean("running");
+            was_running = savedInstanceState .getBoolean("wasRunning");
+        }
 
         session = new SessionManager(getActivity());
 
@@ -119,8 +146,14 @@ public class HomeFragment extends Fragment {
         companyrr = v.findViewById(R.id.companyinfo);
         missedrr = v.findViewById(R.id.missR);
         t_View = v.findViewById(R.id.time_view);
-        startBtn = v.findViewById(R.id.start_button);
-        stopBtn = v.findViewById(R.id.stop_button);
+        chronometer = v.findViewById(R.id.stop_watch);
+//        startStopWatch();
+        if (chronometerHelper.getStartTime() != null) {
+            getCurrentWatchTime();
+        }
+//        ChronometerHelper chronometerHelper = new ChronometerHelper();
+//        startBtn = v.findViewById(R.id.start_button);
+//        stopBtn = v.findViewById(R.id.stop_button);
 
 //        stopStartButton = (Button) findViewById(R.id.startStopButton);
 
@@ -133,12 +166,12 @@ public class HomeFragment extends Fragment {
         gname.setText(name);
 
         //session.checkLogin();
-        if (savedInstanceState != null) {
-            sec = savedInstanceState.getInt("seconds");
-            is_running = savedInstanceState.getBoolean("running");
-            was_running = savedInstanceState .getBoolean("wasRunning");
-        }
-        running_Timer();
+//        if (savedInstanceState != null) {
+//            sec = savedInstanceState.getInt("seconds");
+//            is_running = savedInstanceState.getBoolean("running");
+//            was_running = savedInstanceState .getBoolean("wasRunning");
+//        }
+//        running_Timer();
 
         strt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,26 +189,33 @@ public class HomeFragment extends Fragment {
 //                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
 //                StartShift();
 //                onClickStart();
+//                chronometer.start();
+                startStopWatch();
 
 
-        if(is_running == false)
-        {
-            is_running = true;
-//            setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
-
-//            startTimer();
-            StartShift();
-            onClickStart();
-        }
-        else
-        {
-            is_running = false;
-//            setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
-
-//            timerTask.cancel();
-            EndShift();
-            onClickStop();
-        }
+//        if(is_running == false)
+//        {
+////            is_running = true;
+////            setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
+//
+////            startTimer();
+////            StartShift();
+////            sta
+////            onClickStart();
+//
+////            running_Timer();
+//
+//        }
+//        else
+//        {
+//            is_running = false;
+////            setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
+//
+////            timerTask.cancel();
+////            EndShift();
+////            running_Timer();
+////            onClickStop();
+//        }
             }
         });
 
@@ -304,15 +344,56 @@ public class HomeFragment extends Fragment {
         return v;
     }
 
-    @Override
-    public void onSaveInstanceState(
-            Bundle savedInstanceState)
-    {
-        savedInstanceState.putInt("seconds", sec);
-        savedInstanceState.putBoolean("running", is_running);
-        savedInstanceState.putBoolean("wasRunning", was_running);
+//    @Override
+//    public void onSaveInstanceState(
+//            Bundle savedInstanceState)
+//    {
+//        savedInstanceState.putInt("seconds", sec);
+//        savedInstanceState.putBoolean("running", is_running);
+//        savedInstanceState.putBoolean("wasRunning", was_running);
+//    }
+
+    private void getCurrentWatchTime() {
+        if (chronometerHelper.getStartTime() == null) {
+            // If the start date is not defined, set it.
+            long startTime = SystemClock.elapsedRealtime();
+            chronometerHelper.setStartTime(startTime);
+            chronometer.setBase(startTime);
+        } else {
+            // Otherwise set the chronometer's base to the original
+            // starting time.
+            chronometer.setBase(chronometerHelper.getStartTime());
+
+        }
+
+        chronometer.start();
     }
 
+    private void startStopWatch() {
+        if (chronometerHelper.getStartTime() == null) {
+            // If the start date is not defined, set it.
+            long startTime = SystemClock.elapsedRealtime();
+            chronometerHelper.setStartTime(startTime);
+            chronometer.setBase(startTime);
+        } else {
+            // Otherwise set the chronometer's base to the original
+            // starting time.
+            chronometer.setBase(chronometerHelper.getStartTime());
+
+        }
+
+        chronometer.start();
+
+    }
+
+    private void stopStopWatch() {
+
+        long startTime = SystemClock.elapsedRealtime();
+        chronometerHelper.setStartTime(startTime);
+        chronometer.setBase(startTime);
+        chronometer.stop();
+
+    }
     private void setButtonUI(String start, int color, int bgColor)
     {
         //startstopBtn
@@ -400,11 +481,25 @@ public class HomeFragment extends Fragment {
 
 //                                    startActivity(intent);
 //                                setButtonUI("STOP", R.color.colorAccent);
-                                onClickStart();
-                                setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
+//                                onClickStart();
+//                                setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
 
 
-                            } else {
+                            }
+                            else if(status.equals("201")) {
+                                String suc = j.getString("msg");
+//                                String data = j.getString("data");
+//                                    String id = j.getString("id");
+//                                    String name = j.getString("name");
+//                                    String email = j.getString("email");
+//                                    String agency = j.getString("agency");
+//                                    String guardid = j.getString("guard_id");
+//                                    String profile_photo = j.getString("profile_photo");
+                                // If response matched then show the toast.
+
+                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
+                            }
+                            else {
                                 String msg = j.getString("msg");
                                 // Showing Echo Response Message Coming From Server.
                                 Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();

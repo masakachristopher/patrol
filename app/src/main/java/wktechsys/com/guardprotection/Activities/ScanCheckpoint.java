@@ -180,14 +180,14 @@ public class ScanCheckpoint extends AppCompatActivity {
                                         model.setDate(getOne.getString("date"));
                                         model.setTime(getOne.getString("time"));
                                         model.setCheckno(getOne.getString("name"));
-                                        model.setLocation(getOne.getString("location"));
+//                                        model.setLocation(getOne.getString("location"));
 
                                         list.add(model);
                                         rAdapter = new RoundAdapter(getApplicationContext(), list);
                                         recyclerView.setAdapter(rAdapter);
                                         recyclerView.setVisibility(View.VISIBLE);
                                         rr.setVisibility(View.GONE);
-                                        if (!msg.equals("Success")) {
+                                        if (!msg.equals("success")) {
 
                                             Toast.makeText(ScanCheckpoint.this, msg, Toast.LENGTH_SHORT).show();
                                         }
