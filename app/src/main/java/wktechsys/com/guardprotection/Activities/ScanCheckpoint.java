@@ -54,6 +54,7 @@ public class ScanCheckpoint extends AppCompatActivity {
     SessionManager session;
     RelativeLayout rr, back;
 
+    String endtime, guard_id;
     private Camera camera;
     boolean showingFirst = true;
     ImageView flash;
@@ -72,6 +73,8 @@ public class ScanCheckpoint extends AppCompatActivity {
         setContentView(R.layout.activity_scan_checkpoint);
 
         session = new SessionManager(getApplicationContext());
+        HashMap<String, String> users = session.getUserDetails();
+        guard_id = users.get(session.KEY_ID);
 
         Intent i = getIntent();
         code = i.getStringExtra("code");
@@ -136,6 +139,120 @@ public class ScanCheckpoint extends AppCompatActivity {
 
 
         CList();
+        Aboutus();
+
+    }
+
+    public void Aboutus() {
+
+//        Toast.makeText(ScanCheckpoint.this, "hello", Toast.LENGTH_SHORT).show();
+
+        final ProgressDialog showMe = new ProgressDialog(ScanCheckpoint.this, AlertDialog.THEME_HOLO_LIGHT);
+        showMe.setMessage("Please wait");
+        showMe.setCancelable(true);
+        showMe.setCanceledOnTouchOutside(false);
+        showMe.show();
+
+        stringRequest1 = new StringRequest(Request.Method.POST, Constant.ABOUT_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+                        showMe.dismiss();
+
+                        JSONObject j = null;
+                        try {
+                            j = new JSONObject(ServerResponse);
+
+                            String status = j.getString("status");
+                            if (status.equals("200")) {
+
+
+                                String title = j.getString("title");
+                                String descripts = j.getString("description");
+                                String shiftTime = j.getString("shift");
+                                String intimee = j.getString("intime");
+                                String tround = j.getString("total_rounds");
+                                String cround = j.getString("completed_rounds");
+                                String mround = j.getString("missed_checkpoints");
+                                endtime = j.getString("end");
+//                                Toast.makeText(ScanCheckpoint.this, "end time"+ intimee + endtime, Toast.LENGTH_SHORT).show();
+
+//
+//                                nameC.setText(title);
+//                                descript.setText(descripts);
+//                                duration.setText(shiftTime);
+//                                intime.setText("IN time: " + intimee);
+//                                total.setText(tround);
+//                                complete.setText(cround);
+//                                check.setText(mround);
+                                //  showMe.dismiss();
+
+//                                mShimmerViewContainer.stopShimmerAnimation();
+//                                mShimmerViewContainer.setVisibility(View.GONE);
+//                                companyrr.setVisibility(View.VISIBLE);
+
+
+
+                            }else if(status.equals("500")) {
+//                                showMe.dismiss();
+
+                                String msg = j.getString("msg");
+                                session.logoutUser();
+                                Intent i = new Intent(ScanCheckpoint.this, LoginActivity.class);
+                                startActivity(i);
+                                finish();
+//                                Toast.makeText(ScanCheckpoint.this, msg, Toast.LENGTH_SHORT).show();
+
+                            }
+                            else {
+                                String failed = j.getString("msg");
+//                                 showMe.dismiss();
+//                                Toast.makeText(ScanCheckpoint.this, failed, Toast.LENGTH_LONG).show();
+
+                            }
+                        } catch (JSONException e) {
+                            showMe.dismiss();
+
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                         showMe.dismiss();
+                        if (ScanCheckpoint.this != null) {
+
+                            // NetworkDialog();
+                        }
+
+                        //Toast.makeText(getActivity(),"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("guard_id", guard_id);
+
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(ScanCheckpoint.this);
+        requestQueue.add(stringRequest1);
     }
 
     public void CList() {
@@ -180,7 +297,7 @@ public class ScanCheckpoint extends AppCompatActivity {
                                         model.setDate(getOne.getString("date"));
                                         model.setTime(getOne.getString("time"));
                                         model.setCheckno(getOne.getString("name"));
-//                                        model.setLocation(getOne.getString("location"));
+                                        model.setLocation(getOne.getString("location"));
 
                                         list.add(model);
                                         rAdapter = new RoundAdapter(getApplicationContext(), list);
@@ -190,6 +307,8 @@ public class ScanCheckpoint extends AppCompatActivity {
                                         if (!msg.equals("success")) {
 
                                             Toast.makeText(ScanCheckpoint.this, msg, Toast.LENGTH_SHORT).show();
+                                        }else{
+                                            Toast.makeText(ScanCheckpoint.this, "scan complete!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 } else {
@@ -197,6 +316,8 @@ public class ScanCheckpoint extends AppCompatActivity {
                                     recyclerView.setVisibility(View.GONE);
                                     rr.setVisibility(View.VISIBLE);
                                     Toast.makeText(ScanCheckpoint.this, msg, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(ScanCheckpoint.this, "test", Toast.LENGTH_SHORT).show();
+
                                 }
                             } else {
                                 showMe.dismiss();

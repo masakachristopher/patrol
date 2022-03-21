@@ -2,6 +2,7 @@ package wktechsys.com.guardprotection.Fragments;
 
 import static wktechsys.com.guardprotection.Utilities.Constant.INCIDENT_URL;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -150,7 +151,8 @@ public class ReportFragment extends Fragment {
 //        name = users.get(session.KEY_NAME);
 //        return inflater.inflate(R.layout.fragment_report, container, false);
 
-        sendAndRequestResponse();
+//        sendAndRequestResponse();
+        getIncidents();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -255,6 +257,7 @@ public class ReportFragment extends Fragment {
 }
 
     public void Submit(final String image) {
+//
         // Assigning Activity this to progress dialog.
         progressDialog = new ProgressDialog(getActivity());
         // Showing progress dialog at user registration time.
@@ -384,7 +387,13 @@ public class ReportFragment extends Fragment {
         requestQueue.add(stringRequest);
 
     }
-    private void sendAndRequestResponse() {
+    private void getIncidents() {
+
+        final ProgressDialog showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        showMe.setMessage("Please wait");
+        showMe.setCancelable(true);
+        showMe.setCanceledOnTouchOutside(false);
+        showMe.show();
 
         //RequestQueue initialized
         mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -392,6 +401,7 @@ public class ReportFragment extends Fragment {
         mStringRequest = new StringRequest(Request.Method.POST, INCIDENT_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                showMe.dismiss();
                 list.clear();
                 JSONObject j = null;
                 try {
@@ -436,6 +446,7 @@ public class ReportFragment extends Fragment {
                         toast.show();
                     }
                 } catch (JSONException e) {
+                    showMe.dismiss();
                     Log.e("TAG", "Something Went Wrong");
                 }
 
@@ -446,6 +457,7 @@ public class ReportFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                showMe.dismiss();
                 Log.i(TAG,"Error :" + error.toString());
             }
         }){

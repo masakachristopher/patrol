@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
     SessionManager session;
     String guard_id, name;
     RelativeLayout viewattend;
-    String endtime;
+    String endtime, intime_global;
     ShimmerFrameLayout mShimmerViewContainer;
     RelativeLayout companyrr, missedrr;
     ProgressDialog progressDialog;
@@ -181,6 +181,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        endShift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               EndShift();
+            }
+        });
         strtShift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -190,7 +197,25 @@ public class HomeFragment extends Fragment {
 //                StartShift();
 //                onClickStart();
 //                chronometer.start();
-                startStopWatch();
+//                startStopWatch();
+//          if(Ab)
+//              if(chronometerHelper.getStartTime() == null || chronometerHelper.getStartTime() == 0){
+//                  StartShift();
+//              }else {
+//                  EndShift();
+//              }
+
+//                if(intime_global == null || intime_global.isEmpty()){
+//                    StartShift();
+////                    setButtonUI("hi", R.color.colorAccent, R.color.cardview_light_background);
+//                }else {
+//                    EndShift();
+////                    setButtonUI("hi-asdf", R.color.colorAccent, R.color.cardview_light_background);
+//
+//
+//                }
+
+                StartShift();
 
 
 //        if(is_running == false)
@@ -403,37 +428,7 @@ public class HomeFragment extends Fragment {
     }
     protected void  StartShift(){
 
-//        if(timerStarted == false)
-//        {
-//            timerStarted = true;
-//            setButtonUI("STOP", R.color.red);
 //
-//            startTimer();
-//        }
-//        else
-//        {
-//            timerStarted = false;
-//            setButtonUI("START", R.color.green);
-//
-//            timerTask.cancel();
-//        }
-//
-//        if(is_running == false)
-//        {
-//            is_running = true;
-//            setButtonUI("STOP", R.color.colorAccent);
-//
-////            startTimer();
-////            onClickStart();
-//        }
-//        else
-//        {
-//            was_running = false;
-//            setButtonUI("START", R.color.cardview_shadow_end_color);
-//
-////            timerTask.cancel();
-//        }
-
         progressDialog = new ProgressDialog(getActivity());
         // Showing progress dialog at user registration time.
         progressDialog.setMessage("Please Wait");
@@ -462,7 +457,7 @@ public class HomeFragment extends Fragment {
                             String status = j.getString("status");
                             if (status.equals("200")) {
                                 String suc = j.getString("msg");
-//                                String data = j.getString("data");
+////                                String data = j.getString("data");
 //                                    String id = j.getString("id");
 //                                    String name = j.getString("name");
 //                                    String email = j.getString("email");
@@ -470,34 +465,19 @@ public class HomeFragment extends Fragment {
 //                                    String guardid = j.getString("guard_id");
 //                                    String profile_photo = j.getString("profile_photo");
                                 // If response matched then show the toast.
-                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
+//                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
+                                Aboutus();
 
-                                // Finish the current Login activity.
-//                                    finish();
-//                                    session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
 
-                                // Opening the user profile activity using intent.
-//                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
 
-//                                    startActivity(intent);
-//                                setButtonUI("STOP", R.color.colorAccent);
-//                                onClickStart();
+
+
+                                // on success start shift request start timer and change button UI
+//                                strtShift.setVisibility(View.GONE);
+//                                startStopWatch();
 //                                setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
 
 
-                            }
-                            else if(status.equals("201")) {
-                                String suc = j.getString("msg");
-//                                String data = j.getString("data");
-//                                    String id = j.getString("id");
-//                                    String name = j.getString("name");
-//                                    String email = j.getString("email");
-//                                    String agency = j.getString("agency");
-//                                    String guardid = j.getString("guard_id");
-//                                    String profile_photo = j.getString("profile_photo");
-                                // If response matched then show the toast.
-
-                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
                             }
                             else {
                                 String msg = j.getString("msg");
@@ -518,6 +498,10 @@ public class HomeFragment extends Fragment {
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
                         // NetworkDialog();
+
+
+//                        Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
+
                     }
                 }) {
 
@@ -597,6 +581,8 @@ public class HomeFragment extends Fragment {
                                 // If response matched then show the toast.
                                 Toast.makeText(getActivity(), suc, Toast.LENGTH_SHORT).show();
 
+                                Aboutus();
+                                intime.setVisibility(View.GONE);
                                 // Finish the current Login activity.
 //                                    finish();
 //                                    session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
@@ -605,8 +591,9 @@ public class HomeFragment extends Fragment {
 //                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
 
 //                                    startActivity(intent);
-                                onClickStop();
-                                setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
+//                                onClickStop();
+//                                stopStopWatch();
+//                                setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
 
 
                             } else {
@@ -777,7 +764,7 @@ public class HomeFragment extends Fragment {
                     public void onResponse(String ServerResponse) {
                         //showMe.dismiss();
 
-                        JSONObject j = null;
+                        JSONObject j;
                         try {
                             j = new JSONObject(ServerResponse);
 
@@ -792,12 +779,15 @@ public class HomeFragment extends Fragment {
                                 String tround = j.getString("total_rounds");
                                 String cround = j.getString("completed_rounds");
                                 String mround = j.getString("missed_checkpoints");
-                                endtime = j.getString("end");
+//                                endtime = j.getString("end");
+                                intime_global = j.getString("intime");
+
 
 
                                 nameC.setText(title);
                                 descript.setText(descripts);
                                 duration.setText(shiftTime);
+                                intime.setVisibility(View.VISIBLE);
                                 intime.setText("IN time: " + intimee);
                                 total.setText(tround);
                                 complete.setText(cround);
@@ -807,6 +797,8 @@ public class HomeFragment extends Fragment {
                                 mShimmerViewContainer.stopShimmerAnimation();
                                 mShimmerViewContainer.setVisibility(View.GONE);
                                 companyrr.setVisibility(View.VISIBLE);
+
+
 
                             }else if(status.equals("500")) {
                                 String m = j.getString("msg");
