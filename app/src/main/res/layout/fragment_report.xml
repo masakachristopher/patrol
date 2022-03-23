@@ -26,7 +26,7 @@
                 android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_left_arrow" />
+                app:srcCompat="@drawable/ic_left_arrow" />
         </RelativeLayout>
 
         <TextView
@@ -271,7 +271,7 @@
         android:layout_marginBottom="18dp"
         android:visibility="gone"
         android:scaleType="fitXY"
-        android:src="@drawable/gurad"
+        app:srcCompat="@drawable/gurad"
         tools:fontFamily="@font/sfpro" />
 
 </FrameLayout>

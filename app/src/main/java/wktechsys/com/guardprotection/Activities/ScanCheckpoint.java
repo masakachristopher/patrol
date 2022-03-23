@@ -1,23 +1,40 @@
 package wktechsys.com.guardprotection.Activities;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.support.v7.app.AppCompatActivity;
+import android.location.Location;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ResultReceiver;
+import androidx.annotation.NonNull;
+//import android.support.v7.app.AlertDialog;
+//import android.support.v7.widget.DefaultItemAnimator;
+//import android.support.v7.widget.LinearLayoutManager;
+//import android.support.v7.widget.RecyclerView;
+//import androidx.fragment.app.Fragment;
+//import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -28,7 +45,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,11 +60,17 @@ import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
-import wktechsys.com.guardprotection.Models.CheckPointModel;
-import wktechsys.com.guardprotection.Utilities.Constant;
-import wktechsys.com.guardprotection.R;
 import wktechsys.com.guardprotection.Adapters.RoundAdapter;
+import wktechsys.com.guardprotection.Models.CheckPointModel;
+import wktechsys.com.guardprotection.R;
+import wktechsys.com.guardprotection.Utilities.Constant;
+import wktechsys.com.guardprotection.Utilities.FetchAddressIntentServices;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
+
+//import android.support.v7.app.AppCompatActivity;
+//import androidx.appcompat.AppCompatActivity;
+//import androidx.core.app.ActivityCompat;
+//import androidx.core.content.ContextCompat;
 
 public class ScanCheckpoint extends AppCompatActivity {
 
@@ -65,6 +91,11 @@ public class ScanCheckpoint extends AppCompatActivity {
     public static final String TAG = "STag";
     String id, code = "";
 
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    ProgressBar progressBar;
+    TextView textLatLong, address, postcode, locaity, state, district, country;
+    ResultReceiver resultReceiver;
+    //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +103,14 @@ public class ScanCheckpoint extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_scan_checkpoint);
 
+        resultReceiver = new AddressResultReceiver(new Handler());
+
         session = new SessionManager(getApplicationContext());
         HashMap<String, String> users = session.getUserDetails();
         guard_id = users.get(session.KEY_ID);
+
+        //
+
 
         Intent i = getIntent();
         code = i.getStringExtra("code");
@@ -137,9 +173,109 @@ public class ScanCheckpoint extends AppCompatActivity {
             }
         });
 
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ScanCheckpoint.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            getCurrentLocation();
+        }
 
         CList();
         Aboutus();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            } else {
+                Toast.makeText(this, "Permission is denied!", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    private void getCurrentLocation() {
+//        progressBar.setVisibility(View.VISIBLE);
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(ScanCheckpoint.this)
+                .requestLocationUpdates(locationRequest, new LocationCallback() {
+
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(getApplicationContext())
+                                .removeLocationUpdates(this);
+                        if (locationResult != null && locationResult.getLocations().size() > 0) {
+                            int latestlocIndex = locationResult.getLocations().size() - 1;
+                            double lati = locationResult.getLocations().get(latestlocIndex).getLatitude();
+                            double longi = locationResult.getLocations().get(latestlocIndex).getLongitude();
+                            textLatLong.setText(String.format("Latitude : %s\n Longitude: %s", lati, longi));
+
+                            Location location = new Location("providerNA");
+                            location.setLongitude(longi);
+                            location.setLatitude(lati);
+                            fetchaddressfromlocation(location);
+
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+
+                        }
+                    }
+                }, Looper.getMainLooper());
+
+    }
+
+    private class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+            if (resultCode == Constant.SUCCESS_RESULT) {
+//                address.setText(resultData.getString(Constants.ADDRESS));
+//                locaity.setText(resultData.getString(Constants.LOCAITY));
+//                state.setText(resultData.getString(Constants.STATE));
+//                district.setText(resultData.getString(Constants.DISTRICT));
+//                country.setText(resultData.getString(Constants.COUNTRY));
+//                postcode.setText(resultData.getString(Constants.POST_CODE));
+            } else {
+                Toast.makeText(ScanCheckpoint.this, resultData.getString(Constant.RESULT_DATA_KEY), Toast.LENGTH_SHORT).show();
+            }
+            progressBar.setVisibility(View.GONE);
+        }
+
+
+    }
+
+    private void fetchaddressfromlocation(Location location) {
+        Intent intent = new Intent(this, FetchAddressIntentServices.class);
+        intent.putExtra(Constant.RECEVIER, resultReceiver);
+        intent.putExtra(Constant.LOCATION_DATA_EXTRA, location);
+        startService(intent);
+
 
     }
 

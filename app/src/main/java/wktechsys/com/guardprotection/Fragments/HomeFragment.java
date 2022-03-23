@@ -1,5 +1,6 @@
 package wktechsys.com.guardprotection.Fragments;
 
+//import androidx.appcompat.app.AlertDialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -9,12 +10,17 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+//import android.support.design.widget.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+//import android.support.v7.app.AlertDialog;
+//import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+//import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,13 +57,10 @@ import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import wktechsys.com.guardprotection.Activities.AttendenceActivity;
-import wktechsys.com.guardprotection.Activities.DashboardActivity;
 import wktechsys.com.guardprotection.Activities.LoginActivity;
 import wktechsys.com.guardprotection.Activities.MissedActivity;
 import wktechsys.com.guardprotection.Activities.ScanCheckpoint;
-import wktechsys.com.guardprotection.Adapters.RoundAdapter;
 import wktechsys.com.guardprotection.Adapters.TotalRoundAdapter;
-import wktechsys.com.guardprotection.Models.CheckPointModel;
 import wktechsys.com.guardprotection.Models.RoundModel;
 import wktechsys.com.guardprotection.R;
 import wktechsys.com.guardprotection.Utilities.ChronometerHelper;
@@ -301,7 +304,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                 builder.setMessage("Are you sure you want to logout?")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -316,7 +319,7 @@ public class HomeFragment extends Fragment {
                                 dialog.cancel();
                             }
                         });
-                AlertDialog alert = builder.create();
+                androidx.appcompat.app.AlertDialog alert = builder.create();
                 alert.show();
 
             }

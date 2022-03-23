@@ -6,11 +6,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
+//import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,16 +27,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-//import com.android.volley.JsonArrayRequest;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
-import com.facebook.shimmer.ShimmerFrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,22 +40,20 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import wktechsys.com.guardprotection.Activities.AttendenceActivity;
 import wktechsys.com.guardprotection.Activities.DashboardActivity;
 import wktechsys.com.guardprotection.Activities.LoginActivity;
-import wktechsys.com.guardprotection.Adapters.AttendanceAdapter;
-import wktechsys.com.guardprotection.Models.AttendenceModel;
 import wktechsys.com.guardprotection.Models.IncidentModel;
 import wktechsys.com.guardprotection.R;
 import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
+
+//import com.android.volley.JsonArrayRequest;
 
 /**
  * A simple {@link Fragment} subclass.

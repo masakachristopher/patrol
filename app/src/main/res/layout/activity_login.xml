@@ -13,7 +13,7 @@
         android:layout_height="120dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:src="@drawable/loginlogo" />
+        app:srcCompat="@drawable/loginlogo" />
 
     <LinearLayout
         android:id="@+id/credentials"
@@ -38,7 +38,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/borderbutton"
                 android:padding="5dp"
-                android:src="@drawable/ic_user" />
+                app:srcCompat="@drawable/ic_user" />
 
             <EditText
                 android:maxLength="10"
@@ -75,7 +75,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/borderbutton"
                 android:padding="5dp"
-                android:src="@drawable/ic_lock" />
+                app:srcCompat="@drawable/ic_lock" />
 
             <EditText
                 android:id="@+id/password"
@@ -131,6 +131,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="18dp"
         android:scaleType="fitXY"
-        android:src="@drawable/gurad"
+        app:srcCompat="@drawable/gurad"
         tools:fontFamily="@font/sfpro" />
 </RelativeLayout>

@@ -2,13 +2,28 @@ package wktechsys.com.guardprotection.Utilities;
 
 public class Constant {
 
+    public static final String PACKAGE_NAME = "wktechsys.com.guardprotection";
+    public static final String RESULT_DATA_KEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
+    public static final String RECEVIER = PACKAGE_NAME + ".RECEVIER";
+    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
+
+    public static final String ADDRESS = PACKAGE_NAME + ".ADDRESS";
+    public static final String LOCAITY = PACKAGE_NAME + ".LOCAITY";
+    public static final String COUNTRY = PACKAGE_NAME + ".COUNTRY";
+    public static final String DISTRICT = PACKAGE_NAME + ".DISTRICT";
+    public static final String POST_CODE = PACKAGE_NAME + ".POST_CODE";
+    public static final String STATE = PACKAGE_NAME + ".STATE";
+
+    public static final int SUCCESS_RESULT = 1;
+    public static final int FAILURE_RESULT = 0;
+
 // server url
 //    public static final String BASE_API_URL = "https://qrpatrol.davidbilaza.com/api/";
 //    public static final String BASE_URL = "http://qrpatrol.davidbilaza.com/";
 
     // local urls
-    public static final String BASE_API_URL = "http://100.100.1.33/guardadmin/api/";
-    public static final String BASE_URL = "http://100.100.1.33/guardadmin/";
+    public static final String BASE_API_URL = "http://192.168.43.144/guardadmin/api/";
+    public static final String BASE_URL = "http://192.168.43.144/guardadmin/";
 
 
     public static final String LOGIN_URL = BASE_API_URL+"auth/login";

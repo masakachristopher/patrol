@@ -1,6 +1,6 @@
 package wktechsys.com.guardprotection.Utilities;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class ChronometerHelper {
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:background="@drawable/dialog_bg">
@@ -31,7 +32,7 @@
             android:layout_centerVertical="true"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_cancel_black_24dp" />
+            app:srcCompat="@drawable/ic_cancel_black_24dp" />
     </RelativeLayout>
 
     <View
@@ -43,7 +44,7 @@
         android:background="#3a8db1" />
 
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/RoundRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

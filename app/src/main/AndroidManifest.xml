@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="wktechsys.com.guardprotection">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
 
-    <uses-feature android:name="android.hardware.camera" />
+<!--    <uses-feature android:name="android.hardware.camera" />-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<!--    <uses-permission android:name="android.permission.INTERNET" />-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +23,12 @@
         android:noHistory="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:appComponentFactory="androidx"
+        tools:replace="android:appComponentFactory"
         android:theme="@style/AppTheme">
+        <service
+            android:name=".Utilities.FetchAddressIntentServices"
+            android:exported="false"></service>
 
         <activity android:name=".Activities.LoginActivity" />
 
