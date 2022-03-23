@@ -120,6 +120,14 @@
             android:text="Click on above Checkpoint button to collect or scan checkpoints"
             android:textAlignment="center"
             android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/location_text"
+            android:visibility="gone"
+            android:text=""
+            android:textSize="13sp" />
     </RelativeLayout>
 
     <androidx.recyclerview.widget.RecyclerView

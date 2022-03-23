@@ -18,12 +18,12 @@ public class Constant {
     public static final int FAILURE_RESULT = 0;
 
 // server url
-//    public static final String BASE_API_URL = "https://qrpatrol.davidbilaza.com/api/";
-//    public static final String BASE_URL = "http://qrpatrol.davidbilaza.com/";
+    public static final String BASE_API_URL = "https://qrpatrol.davidbilaza.com/api/";
+    public static final String BASE_URL = "http://qrpatrol.davidbilaza.com/";
 
     // local urls
-    public static final String BASE_API_URL = "http://192.168.43.144/guardadmin/api/";
-    public static final String BASE_URL = "http://192.168.43.144/guardadmin/";
+//    public static final String BASE_API_URL = "http://100.100.1.33/guardadmin/api/";
+//    public static final String BASE_URL = "http://100.100.1.33/guardadmin/";
 
 
     public static final String LOGIN_URL = BASE_API_URL+"auth/login";

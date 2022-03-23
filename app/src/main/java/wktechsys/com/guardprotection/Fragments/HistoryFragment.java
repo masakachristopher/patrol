@@ -64,6 +64,7 @@ public class HistoryFragment extends Fragment {
     ImageView select;
     RelativeLayout back;
 
+    ProgressDialog showMe;
     StringRequest stringRequest, stringRequest1;
     RequestQueue mRequestQueue, mRequestQueue1;
     private List<HistoryModel> list = new ArrayList<>();
@@ -212,7 +213,7 @@ public class HistoryFragment extends Fragment {
 
     public void History() {
 
-        final ProgressDialog showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
         showMe.setMessage("Please wait");
         showMe.setCancelable(true);
         showMe.setCanceledOnTouchOutside(false);
@@ -321,11 +322,12 @@ public class HistoryFragment extends Fragment {
 
     public void HistorySort(final String from, final String to) {
 
-        final ProgressDialog showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
         showMe.setMessage("Please wait");
         showMe.setCancelable(true);
         showMe.setCanceledOnTouchOutside(false);
         showMe.show();
+
 
         mRequestQueue = Volley.newRequestQueue(getActivity());
 

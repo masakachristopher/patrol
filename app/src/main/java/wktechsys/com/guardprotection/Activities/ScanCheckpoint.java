@@ -1,12 +1,16 @@
 package wktechsys.com.guardprotection.Activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +23,7 @@ import androidx.annotation.NonNull;
 //import android.support.v7.widget.RecyclerView;
 //import androidx.fragment.app.Fragment;
 //import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,9 +59,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -65,6 +72,7 @@ import wktechsys.com.guardprotection.Models.CheckPointModel;
 import wktechsys.com.guardprotection.R;
 import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.Utilities.FetchAddressIntentServices;
+import wktechsys.com.guardprotection.Utilities.LocationHelper;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
 
 //import android.support.v7.app.AppCompatActivity;
@@ -73,6 +81,8 @@ import wktechsys.com.guardprotection.Utilities.SessionManager;
 //import androidx.core.content.ContextCompat;
 
 public class ScanCheckpoint extends AppCompatActivity {
+
+    LocationHelper locationHelper = new LocationHelper();
 
     RecyclerView recyclerView;
     RoundAdapter rAdapter;
@@ -89,13 +99,16 @@ public class ScanCheckpoint extends AppCompatActivity {
     RequestQueue mRequestQueue, mRequestQueue1;
     private List<CheckPointModel> list = new ArrayList<>();
     public static final String TAG = "STag";
-    String id, code = "";
+    String id, code = "",geolocation = "";
 
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     ProgressBar progressBar;
-    TextView textLatLong, address, postcode, locaity, state, district, country;
+    TextView locationText, textLatLong, address, postcode, locaity, state, district, country;
     ResultReceiver resultReceiver;
     //
+    ProgressDialog showMe;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +127,8 @@ public class ScanCheckpoint extends AppCompatActivity {
 
         Intent i = getIntent();
         code = i.getStringExtra("code");
+
+        locationText =  findViewById(R.id.location_text);
 
         rr = (RelativeLayout) findViewById(R.id.r1);
 
@@ -160,6 +175,7 @@ public class ScanCheckpoint extends AppCompatActivity {
                     camera.setParameters(parameters);
                     camera.startPreview();
 
+
                 } else {
 
                     showingFirst = true;
@@ -169,6 +185,8 @@ public class ScanCheckpoint extends AppCompatActivity {
                     camera.setParameters(parameters);
                     camera.stopPreview();
                     camera.release();
+
+
                 }
             }
         });
@@ -182,6 +200,7 @@ public class ScanCheckpoint extends AppCompatActivity {
         } else {
             getCurrentLocation();
         }
+
 
         CList();
         Aboutus();
@@ -200,9 +219,57 @@ public class ScanCheckpoint extends AppCompatActivity {
         }
     }
 
+    @Nullable
+    public static String getLocationName(Context context, double lat, double lon) {
+        Geocoder g = new Geocoder(context);
+        try {
+            Address address = g.getFromLocation(lat, lon, 1).get(0);
+            String address_line = "";
+            int max_address = address.getMaxAddressLineIndex();
+            for (int i = 0; i < max_address; i++) {
+
+                address_line += address.getAddressLine(i) + " ";
+            }
+            return address_line;
+        } catch (IOException | IndexOutOfBoundsException e) {
+        }
+        return null;
+    }
+    @SuppressLint("LongLogTag")
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(ScanCheckpoint.this, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+//                Toast.makeText(ScanCheckpoint.this, strReturnedAddress.toString(), Toast.LENGTH_SHORT).show();
+                Log.w("My Current loction address", "" + strReturnedAddress.toString());
+            } else {
+                Log.w("My Current loction address", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("My Current loction address", "Canont get Address!");
+        }
+        return strAdd;
+    }
 
     private void getCurrentLocation() {
 //        progressBar.setVisibility(View.VISIBLE);
+        showMe= new ProgressDialog(ScanCheckpoint.this, AlertDialog.THEME_HOLO_LIGHT);
+        showMe.setMessage("Please wait");
+        showMe.setCancelable(true);
+        showMe.setCanceledOnTouchOutside(false);
+        showMe.show();
+
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(3000);
@@ -223,6 +290,7 @@ public class ScanCheckpoint extends AppCompatActivity {
 
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
+                        showMe.dismiss();
                         super.onLocationResult(locationResult);
                         LocationServices.getFusedLocationProviderClient(getApplicationContext())
                                 .removeLocationUpdates(this);
@@ -230,15 +298,22 @@ public class ScanCheckpoint extends AppCompatActivity {
                             int latestlocIndex = locationResult.getLocations().size() - 1;
                             double lati = locationResult.getLocations().get(latestlocIndex).getLatitude();
                             double longi = locationResult.getLocations().get(latestlocIndex).getLongitude();
-                            textLatLong.setText(String.format("Latitude : %s\n Longitude: %s", lati, longi));
+                            String geolocation = String.format("%s %s",lati,longi);
+                            locationText.setText(geolocation);
+                            locationHelper.setCurrentLocation(geolocation);
 
+//                            locationHelper.setCurrentLocation(getCompleteAddressString(lati,longi));
+
+//                            locationHelper.setCurrentLocation(getLocationName(ScanCheckpoint.this, lati,longi));
                             Location location = new Location("providerNA");
                             location.setLongitude(longi);
                             location.setLatitude(lati);
-                            fetchaddressfromlocation(location);
+
+//                            fetchaddressfromlocation(location);
 
                         } else {
-                            progressBar.setVisibility(View.GONE);
+//                            progressBar.setVisibility(View.GONE);
+                            showMe.dismiss();
 
                         }
                     }
@@ -282,6 +357,7 @@ public class ScanCheckpoint extends AppCompatActivity {
     public void Aboutus() {
 
 //        Toast.makeText(ScanCheckpoint.this, "hello", Toast.LENGTH_SHORT).show();
+
 
         final ProgressDialog showMe = new ProgressDialog(ScanCheckpoint.this, AlertDialog.THEME_HOLO_LIGHT);
         showMe.setMessage("Please wait");
@@ -488,18 +564,35 @@ public class ScanCheckpoint extends AppCompatActivity {
 
             @Override
             public Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
+                Map<String, String> params = new HashMap<String, String>();
 
                 if (code == null) {
 
-                    headers.put("qrcode", "0");
+                    params.put("qrcode", "0");
 
                 } else {
 
-                    headers.put("qrcode", code);
+                    params.put("qrcode", code);
                 }
-                headers.put("guard_id", id);
-                return headers;
+
+                if (geolocation == null) {
+
+                    params.put("location", "");
+//                    params.put("location", locationHelper.getCurrentLocation());
+
+                } else {
+
+//                    params.put("location", geolocation);
+
+
+                    params.put("location", locationHelper.getCurrentLocation());
+
+//                    params.put("location", locationText.getText().toString());
+                }
+
+//                headers.put("location", geolocation);
+                params.put("guard_id", id);
+                return params;
             }
 
         };

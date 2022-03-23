@@ -209,47 +209,6 @@ public class ReportFragment extends Fragment {
 
     }
 
-    private void SendImage( final String image) {
-        final StringRequest stringRequest = new StringRequest(Request.Method.POST, "URL",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("uploade",response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-
-//                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-    },
-            new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
-
-        }
-    }) {
-        @Override
-        protected Map<String, String> getParams() throws AuthFailureError {
-
-            Map<String, String> params = new Hashtable<String, String>();
-
-            params.put("image", image);
-            return params;
-        }
-    };
-    {
-        int socketTimeout = 30000;
-//        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-//        stringRequest.setRetryPolicy(policy);
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
-    }
-}
-
     public void Submit(final String image) {
 //
         // Assigning Activity this to progress dialog.
