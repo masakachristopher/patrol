@@ -10,6 +10,6 @@
         android:layout_width="287dp"
         android:layout_height="155dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/loginlogo" />
+        app:srcCompat="@drawable/loginlogo" />
 
 </RelativeLayout>

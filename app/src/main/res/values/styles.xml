@@ -13,13 +13,13 @@
     </style>
 
     <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="background">@android:color/transparent</item>
     </style>
 
-    <style name="Theme_Dialog" parent="android:Theme.Holo.Dialog">
+    <style name="Theme_Dialog" parent="Theme.AppCompat.Dialog">
         <item name="android:backgroundDimEnabled">true</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
         <!-- <item name="android:windowBackground">@android:color/transparent</item>-->

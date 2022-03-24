@@ -1,30 +1,29 @@
 package wktechsys.com.guardprotection.Activities;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission_group.CAMERA;
+
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+//import android.support.design.widget.BottomNavigationView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
-import wktechsys.com.guardprotection.Fragments.HomeFragment;
 import wktechsys.com.guardprotection.Fragments.HistoryFragment;
+import wktechsys.com.guardprotection.Fragments.HomeFragment;
 import wktechsys.com.guardprotection.Fragments.ProfileFragment;
 import wktechsys.com.guardprotection.Fragments.ReportFragment;
 import wktechsys.com.guardprotection.R;
-
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission_group.CAMERA;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -119,7 +118,7 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new android.support.v7.app.AlertDialog.Builder(getApplicationContext())
+        new android.app.AlertDialog.Builder(getApplicationContext())
                 .setMessage(message)
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)

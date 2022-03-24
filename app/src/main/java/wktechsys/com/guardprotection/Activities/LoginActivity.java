@@ -1,12 +1,10 @@
 package wktechsys.com.guardprotection.Activities;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -30,8 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
-import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.R;
+import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
 
 public class LoginActivity extends AppCompatActivity {

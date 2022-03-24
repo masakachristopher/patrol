@@ -1,15 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: com.budiyev.android:code-scanner:2.1.0@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/9a97fe9b0e25ad247c98d62d5f2e9b95/annotations.zip!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/c42479ff49d3f279f7eb97e2928d7e67/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/09840e40ffee34b7d1401a678b9c2e9a/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/9a97fe9b0e25ad247c98d62d5f2e9b95/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/9a97fe9b0e25ad247c98d62d5f2e9b95/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/9a97fe9b0e25ad247c98d62d5f2e9b95/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/c42479ff49d3f279f7eb97e2928d7e67/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/c42479ff49d3f279f7eb97e2928d7e67/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/09840e40ffee34b7d1401a678b9c2e9a/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/code-scanner-2.1.0.aar/09840e40ffee34b7d1401a678b9c2e9a/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

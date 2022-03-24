@@ -2,14 +2,15 @@ package wktechsys.com.guardprotection.Fragments;
 
 import static wktechsys.com.guardprotection.Utilities.Constant.INCIDENT_URL;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
+//import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -26,16 +27,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-//import com.android.volley.JsonArrayRequest;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
-import com.facebook.shimmer.ShimmerFrameLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,22 +40,20 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import wktechsys.com.guardprotection.Activities.AttendenceActivity;
 import wktechsys.com.guardprotection.Activities.DashboardActivity;
 import wktechsys.com.guardprotection.Activities.LoginActivity;
-import wktechsys.com.guardprotection.Adapters.AttendanceAdapter;
-import wktechsys.com.guardprotection.Models.AttendenceModel;
 import wktechsys.com.guardprotection.Models.IncidentModel;
 import wktechsys.com.guardprotection.R;
 import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
+
+//import com.android.volley.JsonArrayRequest;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -150,7 +145,8 @@ public class ReportFragment extends Fragment {
 //        name = users.get(session.KEY_NAME);
 //        return inflater.inflate(R.layout.fragment_report, container, false);
 
-        sendAndRequestResponse();
+//        sendAndRequestResponse();
+        getIncidents();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,48 +209,8 @@ public class ReportFragment extends Fragment {
 
     }
 
-    private void SendImage( final String image) {
-        final StringRequest stringRequest = new StringRequest(Request.Method.POST, "URL",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d("uploade",response);
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-
-//                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-    },
-            new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
-
-        }
-    }) {
-        @Override
-        protected Map<String, String> getParams() throws AuthFailureError {
-
-            Map<String, String> params = new Hashtable<String, String>();
-
-            params.put("image", image);
-            return params;
-        }
-    };
-    {
-        int socketTimeout = 30000;
-//        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-//        stringRequest.setRetryPolicy(policy);
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(stringRequest);
-    }
-}
-
     public void Submit(final String image) {
+//
         // Assigning Activity this to progress dialog.
         progressDialog = new ProgressDialog(getActivity());
         // Showing progress dialog at user registration time.
@@ -309,7 +265,12 @@ public class ReportFragment extends Fragment {
                                 Toast.makeText(getActivity(), suc, Toast.LENGTH_SHORT).show();
 
                                 // Finish the current Login activity.
-//                                getAcitivity().finish();
+//                                getActivity().finish();
+                                details.setText("");
+                                uploadImage.setImageDrawable(null);
+                                uploadImage.setImageBitmap(null);
+                                layout.setVisibility(View.GONE);
+                                uploadImage.setVisibility(View.GONE);
 //                                session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
 
                                 // Opening the user profile activity using intent.
@@ -384,7 +345,13 @@ public class ReportFragment extends Fragment {
         requestQueue.add(stringRequest);
 
     }
-    private void sendAndRequestResponse() {
+    private void getIncidents() {
+
+        final ProgressDialog showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        showMe.setMessage("Please wait");
+        showMe.setCancelable(true);
+        showMe.setCanceledOnTouchOutside(false);
+        showMe.show();
 
         //RequestQueue initialized
         mRequestQueue = Volley.newRequestQueue(getActivity());
@@ -392,6 +359,7 @@ public class ReportFragment extends Fragment {
         mStringRequest = new StringRequest(Request.Method.POST, INCIDENT_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                showMe.dismiss();
                 list.clear();
                 JSONObject j = null;
                 try {
@@ -436,6 +404,7 @@ public class ReportFragment extends Fragment {
                         toast.show();
                     }
                 } catch (JSONException e) {
+                    showMe.dismiss();
                     Log.e("TAG", "Something Went Wrong");
                 }
 
@@ -446,6 +415,7 @@ public class ReportFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                showMe.dismiss();
                 Log.i(TAG,"Error :" + error.toString());
             }
         }){

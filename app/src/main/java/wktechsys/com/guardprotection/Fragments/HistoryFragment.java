@@ -6,12 +6,11 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+//import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +64,7 @@ public class HistoryFragment extends Fragment {
     ImageView select;
     RelativeLayout back;
 
+    ProgressDialog showMe;
     StringRequest stringRequest, stringRequest1;
     RequestQueue mRequestQueue, mRequestQueue1;
     private List<HistoryModel> list = new ArrayList<>();
@@ -213,7 +213,7 @@ public class HistoryFragment extends Fragment {
 
     public void History() {
 
-        final ProgressDialog showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
         showMe.setMessage("Please wait");
         showMe.setCancelable(true);
         showMe.setCanceledOnTouchOutside(false);
@@ -322,11 +322,12 @@ public class HistoryFragment extends Fragment {
 
     public void HistorySort(final String from, final String to) {
 
-        final ProgressDialog showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        showMe = new ProgressDialog(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
         showMe.setMessage("Please wait");
         showMe.setCancelable(true);
         showMe.setCanceledOnTouchOutside(false);
         showMe.show();
+
 
         mRequestQueue = Volley.newRequestQueue(getActivity());
 

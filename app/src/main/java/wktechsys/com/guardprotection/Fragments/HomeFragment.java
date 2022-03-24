@@ -1,5 +1,6 @@
 package wktechsys.com.guardprotection.Fragments;
 
+//import androidx.appcompat.app.AlertDialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -7,11 +8,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.os.Handler;
+import android.os.SystemClock;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+//import android.support.design.widget.FloatingActionButton;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+//import android.support.v7.app.AlertDialog;
+//import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+//import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,25 +52,24 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 import wktechsys.com.guardprotection.Activities.AttendenceActivity;
-import wktechsys.com.guardprotection.Activities.DashboardActivity;
 import wktechsys.com.guardprotection.Activities.LoginActivity;
 import wktechsys.com.guardprotection.Activities.MissedActivity;
 import wktechsys.com.guardprotection.Activities.ScanCheckpoint;
-import wktechsys.com.guardprotection.Adapters.RoundAdapter;
 import wktechsys.com.guardprotection.Adapters.TotalRoundAdapter;
-import wktechsys.com.guardprotection.Models.CheckPointModel;
 import wktechsys.com.guardprotection.Models.RoundModel;
 import wktechsys.com.guardprotection.R;
+import wktechsys.com.guardprotection.Utilities.ChronometerHelper;
 import wktechsys.com.guardprotection.Utilities.Constant;
 import wktechsys.com.guardprotection.Utilities.SessionManager;
 
 public class HomeFragment extends Fragment {
 
-    TextView strt, strtShift, nameC, descript, intime, duration, total, complete, check, gname;
+    TextView strt,t_View, strtShift,endShift, nameC, descript, intime, duration, total, complete, check, gname;
     FloatingActionButton flash;
     RelativeLayout rounds;
     Dialog dialog;
@@ -70,10 +79,16 @@ public class HomeFragment extends Fragment {
     SessionManager session;
     String guard_id, name;
     RelativeLayout viewattend;
-    String endtime;
+    String endtime, intime_global;
     ShimmerFrameLayout mShimmerViewContainer;
     RelativeLayout companyrr, missedrr;
     ProgressDialog progressDialog;
+    Button startBtn,stopBtn;
+    private int sec = 0;
+    private boolean is_running;
+    private boolean was_running;
+    Chronometer chronometer;
+    ChronometerHelper chronometerHelper = new ChronometerHelper();
 
 
 
@@ -84,6 +99,21 @@ public class HomeFragment extends Fragment {
     private List<RoundModel> list = new ArrayList<>();
     public static final String TAG = "STag";
 
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        outState.putInt("seconds", sec);
+//        outState.putBoolean("running", is_running);
+//        outState.putBoolean("was_running", was_running);
+//        super.onSaveInstanceState(outState);
+//    }
+    @Override
+    public void onSaveInstanceState(
+            Bundle savedInstanceState)
+    {
+        savedInstanceState.putInt("seconds", sec);
+        savedInstanceState.putBoolean("running", is_running);
+        savedInstanceState.putBoolean("wasRunning", was_running);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -94,10 +124,17 @@ public class HomeFragment extends Fragment {
         //Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
+        if (savedInstanceState != null) {
+            sec = savedInstanceState.getInt("seconds");
+            is_running = savedInstanceState.getBoolean("running");
+            was_running = savedInstanceState .getBoolean("wasRunning");
+        }
+
         session = new SessionManager(getActivity());
 
         strt = v.findViewById(R.id.startScan);
         strtShift = v.findViewById(R.id.startShift);
+        endShift = v.findViewById(R.id.endShift);
         nameC = v.findViewById(R.id.cname);
         gname = v.findViewById(R.id.textname);
         descript = v.findViewById(R.id.description);
@@ -111,7 +148,17 @@ public class HomeFragment extends Fragment {
         mShimmerViewContainer = v.findViewById(R.id.shimmer_view_container);
         companyrr = v.findViewById(R.id.companyinfo);
         missedrr = v.findViewById(R.id.missR);
+        t_View = v.findViewById(R.id.time_view);
+        chronometer = v.findViewById(R.id.stop_watch);
+//        startStopWatch();
+        if (chronometerHelper.getStartTime() != null) {
+            getCurrentWatchTime();
+        }
+//        ChronometerHelper chronometerHelper = new ChronometerHelper();
+//        startBtn = v.findViewById(R.id.start_button);
+//        stopBtn = v.findViewById(R.id.stop_button);
 
+//        stopStartButton = (Button) findViewById(R.id.startStopButton);
 
         logoutbtn = v.findViewById(R.id.logout);
 
@@ -122,6 +169,12 @@ public class HomeFragment extends Fragment {
         gname.setText(name);
 
         //session.checkLogin();
+//        if (savedInstanceState != null) {
+//            sec = savedInstanceState.getInt("seconds");
+//            is_running = savedInstanceState.getBoolean("running");
+//            was_running = savedInstanceState .getBoolean("wasRunning");
+//        }
+//        running_Timer();
 
         strt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,16 +184,89 @@ public class HomeFragment extends Fragment {
             }
         });
 
+
+        endShift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               EndShift();
+            }
+        });
         strtShift.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Intent i = new Intent(getContext(), ScanCheckpoint.class);
 //                startActivity(i);
 //                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
+//                StartShift();
+//                onClickStart();
+//                chronometer.start();
+//                startStopWatch();
+//          if(Ab)
+//              if(chronometerHelper.getStartTime() == null || chronometerHelper.getStartTime() == 0){
+//                  StartShift();
+//              }else {
+//                  EndShift();
+//              }
+
+//                if(intime_global == null || intime_global.isEmpty()){
+//                    StartShift();
+////                    setButtonUI("hi", R.color.colorAccent, R.color.cardview_light_background);
+//                }else {
+//                    EndShift();
+////                    setButtonUI("hi-asdf", R.color.colorAccent, R.color.cardview_light_background);
+//
+//
+//                }
+
                 StartShift();
+
+
+//        if(is_running == false)
+//        {
+////            is_running = true;
+////            setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
+//
+////            startTimer();
+////            StartShift();
+////            sta
+////            onClickStart();
+//
+////            running_Timer();
+//
+//        }
+//        else
+//        {
+//            is_running = false;
+////            setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
+//
+////            timerTask.cancel();
+////            EndShift();
+////            running_Timer();
+////            onClickStop();
+//        }
             }
         });
 
+//        startBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Intent i = new Intent(getContext(), ScanCheckpoint.class);
+////                startActivity(i);
+////                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
+////                StartShift();
+//                onClickStart();
+//            }
+//        });
+        endShift.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent i = new Intent(getContext(), ScanCheckpoint.class);
+//                startActivity(i);
+//                Toast.makeText(getActivity(), "start shift", Toast.LENGTH_SHORT).show();
+                EndShift();
+//                onClickStop();
+            }
+        });
 
         rounds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,7 +304,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(getActivity());
                 builder.setMessage("Are you sure you want to logout?")
                         .setCancelable(false)
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -193,7 +319,7 @@ public class HomeFragment extends Fragment {
                                 dialog.cancel();
                             }
                         });
-                AlertDialog alert = builder.create();
+                androidx.appcompat.app.AlertDialog alert = builder.create();
                 alert.show();
 
             }
@@ -246,10 +372,66 @@ public class HomeFragment extends Fragment {
         return v;
     }
 
+//    @Override
+//    public void onSaveInstanceState(
+//            Bundle savedInstanceState)
+//    {
+//        savedInstanceState.putInt("seconds", sec);
+//        savedInstanceState.putBoolean("running", is_running);
+//        savedInstanceState.putBoolean("wasRunning", was_running);
+//    }
 
+    private void getCurrentWatchTime() {
+        if (chronometerHelper.getStartTime() == null) {
+            // If the start date is not defined, set it.
+            long startTime = SystemClock.elapsedRealtime();
+            chronometerHelper.setStartTime(startTime);
+            chronometer.setBase(startTime);
+        } else {
+            // Otherwise set the chronometer's base to the original
+            // starting time.
+            chronometer.setBase(chronometerHelper.getStartTime());
+
+        }
+
+        chronometer.start();
+    }
+
+    private void startStopWatch() {
+        if (chronometerHelper.getStartTime() == null) {
+            // If the start date is not defined, set it.
+            long startTime = SystemClock.elapsedRealtime();
+            chronometerHelper.setStartTime(startTime);
+            chronometer.setBase(startTime);
+        } else {
+            // Otherwise set the chronometer's base to the original
+            // starting time.
+            chronometer.setBase(chronometerHelper.getStartTime());
+
+        }
+
+        chronometer.start();
+
+    }
+
+    private void stopStopWatch() {
+
+        long startTime = SystemClock.elapsedRealtime();
+        chronometerHelper.setStartTime(startTime);
+        chronometer.setBase(startTime);
+        chronometer.stop();
+
+    }
+    private void setButtonUI(String start, int color, int bgColor)
+    {
+        //startstopBtn
+        strtShift.setText(start);
+        strtShift.setBackgroundColor(ContextCompat.getColor(getActivity(), bgColor));
+        strtShift.setTextColor(ContextCompat.getColor(getActivity(), color));
+    }
     protected void  StartShift(){
 
-
+//
         progressDialog = new ProgressDialog(getActivity());
         // Showing progress dialog at user registration time.
         progressDialog.setMessage("Please Wait");
@@ -278,6 +460,118 @@ public class HomeFragment extends Fragment {
                             String status = j.getString("status");
                             if (status.equals("200")) {
                                 String suc = j.getString("msg");
+////                                String data = j.getString("data");
+//                                    String id = j.getString("id");
+//                                    String name = j.getString("name");
+//                                    String email = j.getString("email");
+//                                    String agency = j.getString("agency");
+//                                    String guardid = j.getString("guard_id");
+//                                    String profile_photo = j.getString("profile_photo");
+                                // If response matched then show the toast.
+                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
+                                Aboutus();
+
+
+
+                                // on success start shift request start timer and change button UI
+//                                strtShift.setVisibility(View.GONE);
+//                                startStopWatch();
+//                                setButtonUI("Click to End Shift", R.color.colorAccent, R.color.cardview_light_background);
+
+
+                            }
+                            else {
+                                String msg = j.getString("msg");
+                                // Showing Echo Response Message Coming From Server.
+                                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+                        // NetworkDialog();
+
+
+//                        Toast.makeText(getActivity(), "error", Toast.LENGTH_LONG).show();
+
+                    }
+                }) {
+
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<String, String>();
+                headers.put("apikey", "d29985af97d29a80e40cd81016d939af");
+
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                // The firs argument should be same sa your MySQL database table columns.
+//                    params.put("mobile", mobile.getText().toString());
+//                    params.put("password", password.getText().toString());
+                params.put("guard_id", guard_id);
+
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest);
+
+    }
+
+    protected void EndShift(){
+
+
+        progressDialog = new ProgressDialog(getActivity());
+        // Showing progress dialog at user registration time.
+        progressDialog.setMessage("Please Wait");
+        progressDialog.show();
+
+        // Creating Volley newRequestQueue .
+        requestQueue = Volley.newRequestQueue(getActivity());
+
+//        Toast.makeText(getActivity(), "Guard ID" + guard_id, Toast.LENGTH_SHORT).show();
+        // Creating string request with post method.
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, Constant.END_SHIFT_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+
+                        Log.d("NetworkLog", "Request Sent");
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+
+                        // Matching server responce message to our text.
+                        JSONObject j = null;
+                        try {
+                            j = new JSONObject(ServerResponse);
+
+                            String status = j.getString("status");
+                            if (status.equals("200")) {
+                                String suc = j.getString("msg");
 //                                String data = j.getString("data");
 //                                    String id = j.getString("id");
 //                                    String name = j.getString("name");
@@ -288,6 +582,8 @@ public class HomeFragment extends Fragment {
                                 // If response matched then show the toast.
                                 Toast.makeText(getActivity(), suc, Toast.LENGTH_SHORT).show();
 
+                                Aboutus();
+                                intime.setVisibility(View.GONE);
                                 // Finish the current Login activity.
 //                                    finish();
 //                                    session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
@@ -296,6 +592,10 @@ public class HomeFragment extends Fragment {
 //                                    Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
 
 //                                    startActivity(intent);
+//                                onClickStop();
+//                                stopStopWatch();
+//                                setButtonUI("Click to Start Shift", R.color.colorAccent,R.color.cardview_light_background);
+
 
                             } else {
                                 String msg = j.getString("msg");
@@ -465,7 +765,7 @@ public class HomeFragment extends Fragment {
                     public void onResponse(String ServerResponse) {
                         //showMe.dismiss();
 
-                        JSONObject j = null;
+                        JSONObject j;
                         try {
                             j = new JSONObject(ServerResponse);
 
@@ -480,12 +780,16 @@ public class HomeFragment extends Fragment {
                                 String tround = j.getString("total_rounds");
                                 String cround = j.getString("completed_rounds");
                                 String mround = j.getString("missed_checkpoints");
-                                endtime = j.getString("end");
+//                                endtime = j.getString("end");
+                                intime_global = j.getString("intime");
+
+
 
 
                                 nameC.setText(title);
                                 descript.setText(descripts);
                                 duration.setText(shiftTime);
+                                intime.setVisibility(View.VISIBLE);
                                 intime.setText("IN time: " + intimee);
                                 total.setText(tround);
                                 complete.setText(cround);
@@ -495,6 +799,8 @@ public class HomeFragment extends Fragment {
                                 mShimmerViewContainer.stopShimmerAnimation();
                                 mShimmerViewContainer.setVisibility(View.GONE);
                                 companyrr.setVisibility(View.VISIBLE);
+
+
 
                             }else if(status.equals("500")) {
                                 String m = j.getString("msg");
@@ -645,12 +951,18 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mShimmerViewContainer.startShimmerAnimation();
+        if (was_running) {
+            is_running = true;
+        }
     }
 
     @Override
     public void onPause() {
         mShimmerViewContainer.stopShimmerAnimation();
         super.onPause();
+
+        was_running = is_running;
+        is_running = false;
     }
 
     private void NetworkDialog1() {
@@ -669,4 +981,53 @@ public class HomeFragment extends Fragment {
         });
         dialogs.show();
     }
+//    @Override
+//    protected void onPause()
+//    {
+//        super.onPause();
+//        was_running = is_running;
+//        is_running = false;
+//    }
+//    @Override
+//    protected void onResume()
+//    {
+//        super.onResume();
+//        if (was_running) {
+//            is_running = true;
+//        }
+//    }
+    public void onClickStart()
+    {
+        is_running = true;
+    }
+    public void onClickStop()
+    {
+        is_running = false;
+    }
+    public void onClickReset()
+    {
+        is_running = false;
+        sec = 0;
+    }
+    private void running_Timer()
+    {
+//        final TextView t_View = v.findViewById(R.id.time_view);
+        final Handler handle = new Handler();
+        handle.post(new Runnable() {
+            @Override
+            public void run()
+            {
+                int hrs = sec / 3600;
+                int mins = (sec % 3600) / 60;
+                int secs = sec % 60;
+                String time_t = String .format(Locale.getDefault(), "    %d:%02d:%02d   ", hrs,mins, secs);
+                t_View.setText(time_t);
+                if (is_running) {
+                    sec++;
+                }
+                handle.postDelayed(this, 1000);
+            }
+        });
+    }
+
 }

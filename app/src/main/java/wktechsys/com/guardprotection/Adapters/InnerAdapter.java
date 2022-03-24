@@ -1,9 +1,10 @@
 package wktechsys.com.guardprotection.Adapters;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import wktechsys.com.guardprotection.Models.HistoryModel;
 import wktechsys.com.guardprotection.Models.InnerModel;
-import wktechsys.com.guardprotection.Models.MissedModel;
 import wktechsys.com.guardprotection.R;
 
 public class InnerAdapter extends RecyclerView.Adapter<InnerAdapter.ViewHolder>{
