@@ -88,8 +88,8 @@ public class ProfileFragment extends Fragment {
          Picasso.with(container.getContext())
                 .load(BASE_URL+"uploads/"+profile_photo)
                  .transform(new CircleTransform())
-                 .placeholder(R.drawable.guards)
-                .error(R.drawable.guards)
+                 .placeholder(R.drawable.ic_photo_camera)
+                .error(R.drawable.ic_photo_camera)
                 .into(p_pic);
 
         gname.setText(name);
