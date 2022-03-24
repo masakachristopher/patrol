@@ -468,10 +468,8 @@ public class HomeFragment extends Fragment {
 //                                    String guardid = j.getString("guard_id");
 //                                    String profile_photo = j.getString("profile_photo");
                                 // If response matched then show the toast.
-//                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), suc, Toast.LENGTH_LONG).show();
                                 Aboutus();
-
-
 
 
 
@@ -784,6 +782,7 @@ public class HomeFragment extends Fragment {
                                 String mround = j.getString("missed_checkpoints");
 //                                endtime = j.getString("end");
                                 intime_global = j.getString("intime");
+
 
 
 
