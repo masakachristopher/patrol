@@ -56,13 +56,13 @@
             shimmer:srcCompat="@drawable/guards" />
 
 
-        <ImageView
-            android:id="@+id/profile_photo"
-            android:layout_width="98dp"
-            android:layout_height="124dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="160dp"
-            shimmer:srcCompat="@drawable/ic_photo_camera" />
+<!--        <ImageView-->
+<!--            android:id="@+id/profile_photo"-->
+<!--            android:layout_width="98dp"-->
+<!--            android:layout_height="124dp"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_marginRight="160dp"-->
+<!--            shimmer:srcCompat="@drawable/ic_photo_camera" />-->
 
         <ImageView
             android:layout_width="match_parent"
@@ -110,6 +110,24 @@
             android:layout_marginRight="30dp"
             android:orientation="vertical"
             android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                >
+
+                <ImageView
+                    android:id="@+id/profile_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="124dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginRight="50dp"
+                    android:layout_marginLeft="50dp"
+                    shimmer:srcCompat="@drawable/ic_photo_camera" />
+
+            </RelativeLayout>
+
 
             <RelativeLayout
                 android:visibility="gone"
@@ -244,6 +262,7 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginTop="12dp"
