@@ -265,7 +265,12 @@ public class ReportFragment extends Fragment {
                                 Toast.makeText(getActivity(), suc, Toast.LENGTH_SHORT).show();
 
                                 // Finish the current Login activity.
-//                                getAcitivity().finish();
+//                                getActivity().finish();
+                                details.setText("");
+                                uploadImage.setImageDrawable(null);
+                                uploadImage.setImageBitmap(null);
+                                layout.setVisibility(View.GONE);
+                                uploadImage.setVisibility(View.GONE);
 //                                session.createLoginSession(mobile.getText().toString(), password.getText().toString(), id, name, email, agency, guardid,profile_photo);
 
                                 // Opening the user profile activity using intent.
